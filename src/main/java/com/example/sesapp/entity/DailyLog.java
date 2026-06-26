@@ -1,5 +1,6 @@
 package com.example.sesapp.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;
@@ -35,9 +36,9 @@ public class DailyLog {
     private LocalDate workDate;
 
     @Column(name = "work_hours", nullable = false)
-    private Integer workHours;
+    private BigDecimal workHours;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String details;
 
     @Column(name = "created_at", insertable = false, updatable = false)

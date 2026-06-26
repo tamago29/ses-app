@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>日報一覧 - SES日報管理アプリ</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f7f6; }
+        h1 { color: #333; }
+        .log-card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .date { font-weight: bold; color: #007bff; }
+        .category { display: inline-block; background-color: #e2e8f0; color: #4a5568; padding: 2px 8px; border-radius: 4px; font-size: 0.85em; margin-left: 10px; }
+        .text { margin-top: 10px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+    <h1>📝 自社日報一覧</h1>
+    <p>（データベースから取得した日報を表示しています）</p>
+
+    <div th:each="log : ${logs}" class="log-card">
+        <div>
+            <span class="date" th:text="${log.workDate}">2026/06/26</span>
+            <span class="category" th:text="${log.taskCategory.name}">カテゴリ</span>
+        </div>
+        <div class="text" th:text="${log.details}">ここに日報の内容が表示されます。</div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(logs)}" style="color: #666;">
+        まだ日報が登録されていません。
+    </div>
+
+</body>
+</html>

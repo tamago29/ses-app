@@ -17,7 +17,7 @@ public class TaskCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(name = "category_name", nullable = false, unique = true, length = 100)
     private String name;
 
 }
