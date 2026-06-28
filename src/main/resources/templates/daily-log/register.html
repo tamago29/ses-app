@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>日報登録 - SES日報管理アプリ</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f7f6; }
+        .form-container { background: white; padding: 30px; border-radius: 8px; max-width: 500px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="date"], textarea { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        textarea { height: 150px; }
+        button { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+
+    <h1>日報の新規登録</h1>
+
+    <div class="form-container">
+        <!-- ① th:object で Javaから届いた空のオブジェクトを指定 -->
+        <form th:action="@{/daily-log/register}" th:object="${dailyLog}" method="post">
+            
+            <!-- 日付の入力欄 -->
+            <div class="form-group">
+                <label for="workDate">勤務日</label>
+                <!-- ② th:field で DailyLogの workDate 変数と紐付け -->
+                <input type="date" id="workDate" th:field="*{workDate}" required>
+            </div>
+			
+			<div class="form-group">
+			    <label for="workHours">所要時間</label>
+			    <input type="number" id="workHours" th:field="*{workHours}" required>
+			</div>
+
+			<div class="form-group">
+			    <label for="taskCategory">カテゴリ</label>
+			        <!-- th:field="*{taskCategory}" で、選んだカテゴリを日報オブジェクトに紐付ける -->
+			        <select id="taskCategory" th:field="*{taskCategory}" required>
+			        	<option value="">-- カテゴリを選択してください --</option>
+			            <!-- th:each で Javaから届いた「categories」を1つずつループして選択肢を作る -->
+			            <option th:each="cat : ${categories}" 
+			                    th:value="${cat.id}" 
+			                    th:text="${cat.name}">
+			                    </option>
+			        </select>
+			
+			<!-- 本文の入力欄 -->
+			<div class="form-group">
+				<label for="details">業務内容</label>
+				<!-- ② th:field で DailyLogの details 変数と紐付け -->
+				<textarea id="details" th:field="*{details}" placeholder="今日の業務内容を入力してください" required></textarea>
+			</div>
+
+            <button type="submit">登録する</button>
+        </form>
+    </div>
+
+</body>
+</html>
