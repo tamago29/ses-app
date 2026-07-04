@@ -8,6 +8,6 @@ import com.example.sesapp.entity.DailyLog;
 @Repository
 public interface DailyLogRepository extends JpaRepository<DailyLog, Integer> {
     
-    // 「特定のユーザーの、日報一覧だけ」を新着順（IDの降順）で全て取得するメソッド
+    // 「特定のユーザーの日報一覧のみ」を新着順（IDの降順）で全て取得するメソッド
     List<DailyLog> findByUserIdOrderByIdDesc(Integer userId);
 }
