@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -44,8 +43,7 @@ public class SecurityConfig {
     protected UserDetailsService userDetailsService() {
         return username -> {
             // 画面のユーザー名欄に入力されたメールアドレスでDBを検索
-            User user = userRepository.findByEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりません: " + username));
+            User user = userRepository.findByEmail(username);
 
             // Spring Securityが理解できる形式に変換して返す
             return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())

@@ -6,8 +6,6 @@ import com.example.sesapp.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
-
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -15,7 +13,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     // メールアドレスでユーザーを探すビジネスロジック
-    public Optional<User> findUserByEmail(String email) {
+    public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 }

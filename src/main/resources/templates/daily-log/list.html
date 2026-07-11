@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>日報一覧 - SES日報管理アプリ</title>
+    <title>日報一覧 - 日報管理アプリ</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f7f6; }
         h1 { color: #333; }
@@ -14,20 +15,27 @@
 </head>
 <body>
 
-    <h1>📝 自社日報一覧</h1>
-    <p>（データベースから取得した日報を表示しています）</p>
+    <h1>日報一覧</h1>
+	<div class="text-end mb-3">
+		<a th:href="@{/daily-log/register}" class="btn btn-danger">
+		    日報登録
+		</a>
+	</div>
+	
+	<div class="log-board">
+	    <div th:each="entry : ${groupedLogs}" class="log-card">
+	        <div>
+	            <span class="date" th:text="${entry.key}"></span>
+	            
+	            <th:block th:each="log : ${entry.value}">
+	                <span class="category" th:text="${log.taskCategory.name}"></span>
+	            </th:block>
+	        </div>
+	    </div>
+	</div>
 
-    <div th:each="log : ${logs}" class="log-card">
-        <div>
-            <span class="date" th:text="${log.workDate}">2026/06/26</span>
-            <span class="category" th:text="${log.taskCategory.name}">カテゴリ</span>
-        </div>
-        <div class="text" th:text="${log.details}">ここに日報の内容が表示されます。</div>
-    </div>
-
-    <div th:if="${#lists.isEmpty(logs)}" style="color: #666;">
-        まだ日報が登録されていません。
-    </div>
-
+	<div th:if="${#maps.isEmpty(groupedLogs)}" style="color: #666;">
+	    まだ日報が登録されていません。
+	</div>
 </body>
 </html>
