@@ -29,18 +29,27 @@ public class DailyLogService {
 
         User user = userRepository.findByEmail(email);
 
+        // 送信されてきたアイテムが空の場合は何もしない
+        if (items == null) {
+            return;
+        }
+
         for (DailyLogForm.CategoryWork item : items) {
+            
+            // 時間が入力されていない、または0時間以下の行は保存スキップ
+            if (item.getWorkHours() == null || item.getWorkHours().doubleValue() <= 0) {
+                continue;
+            }
 
             DailyLog log = new DailyLog();
-
             log.setUser(user);
 
+            // 画面から引き継いだIDをマッピング
             TaskCategory category = new TaskCategory();
             category.setId(item.getCategoryId());
             log.setTaskCategory(category);
 
             log.setWorkDate(workDate);
-
             log.setWorkHours(item.getWorkHours());
 
             dailyLogRepository.save(log);
@@ -48,9 +57,7 @@ public class DailyLogService {
     }
 
     public List<DailyLog> getDailyLogsByUsername(String email) {
-
         User user = userRepository.findByEmail(email);
-
         return dailyLogRepository.findByUserIdOrderByIdDesc(user.getId());
     }
 }

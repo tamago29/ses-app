@@ -1,5 +1,6 @@
 package com.example.sesapp.controller;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class DailyLogController {
         Map<java.time.LocalDate, List<DailyLog>> groupedLogs = rawLogs.stream()
                 .collect(Collectors.groupingBy(
                 		DailyLog::getWorkDate,
-                        () -> new TreeMap<>(Collections.reverseOrder()), // 👈 ここで「日付が新しい順」に自動ソートします！
+                        () -> new TreeMap<>(Collections.reverseOrder()), // 「日付が新しい順」に自動ソート
                         Collectors.toList()
                 ));
 
@@ -68,6 +69,7 @@ public class DailyLogController {
                 categories.stream()
                         .map(cat -> {
                             DailyLogForm.CategoryWork item = new DailyLogForm.CategoryWork();
+                            item.setCategoryId(cat.getId());
                             item.setCategoryName(cat.getName());
                             return item;
                         })
@@ -92,5 +94,32 @@ public class DailyLogController {
         );
 
         return "redirect:/daily-log/list";
+    }
+    
+    // グラフ画面表示
+    @GetMapping("/analytics")
+    public String showAnalytics(
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model) {
+
+        String email = userDetails.getUsername();
+
+        // ユーザーの全日報データを取得
+        List<DailyLog> rawLogs = dailyLogService.getDailyLogsByUsername(email);
+
+        // 「カテゴリ名」ごとに「稼働時間（workHours）」を合計する集計処理
+        Map<String, BigDecimal> categoryTotalMap = rawLogs.stream()
+                .collect(Collectors.groupingBy(
+                        log -> log.getTaskCategory().getName(),                       // キー：カテゴリ名
+                        Collectors.mapping(
+                                DailyLog::getWorkHours,
+                                Collectors.reducing(BigDecimal.ZERO, BigDecimal::add)) // 値：時間の合計計算
+                ));
+
+        // JavaScript（Chart.js）で扱いやすいように「カテゴリ名のリスト」と「合計時間のリスト」に分解してモデルに詰める
+        model.addAttribute("chartLabels", categoryTotalMap.keySet());
+        model.addAttribute("chartData", categoryTotalMap.values());
+
+        return "daily-log/analytics"; 
     }
 }

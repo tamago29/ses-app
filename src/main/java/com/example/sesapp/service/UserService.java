@@ -12,7 +12,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    // メールアドレスでユーザーを探すビジネスロジック
+    // メールアドレスでユーザーを探す
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }

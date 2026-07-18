@@ -16,10 +16,10 @@
 <body>
 
     <h1>日報一覧</h1>
+	
 	<div class="text-end mb-3">
-		<a th:href="@{/daily-log/register}" class="btn btn-danger">
-		    日報登録
-		</a>
+		<a th:href="@{/daily-log/register}" class="btn btn-link">日報新規登録</a>
+		<a th:href="@{/daily-log/analytics}" class="btn btn-link">業務割合グラフ</a>
 	</div>
 	
 	<div class="log-board">
@@ -29,6 +29,7 @@
 	            
 	            <th:block th:each="log : ${entry.value}">
 	                <span class="category" th:text="${log.taskCategory.name}"></span>
+					<span class="time" th:text="|${log.workHours}h|"></span>
 	            </th:block>
 	        </div>
 	    </div>

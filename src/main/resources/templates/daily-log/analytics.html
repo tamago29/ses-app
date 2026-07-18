@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>業務割合グラフ</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; margin: 40px; background-color: #f5f7fa; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; }
+        .chart-container { position: relative; margin: 30px auto; height: 300px; width: 300px; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: #3498db; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .btn:hover { background-color: #2980b9; }
+        .actions { text-align: center; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>業務割合</h1>
+    
+    <div class="chart-container">
+        <canvas id="categoryChart"></canvas>
+    </div>
+
+    <div class="actions">
+        <a th:href="@{/daily-log/list}" class="btn">一覧画面に戻る</a>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    // コントローラーから送られてきた「ラベル」と「データ」をJSの配列として受け取る
+    const labels = /*[[${chartLabels}]]*/ [];
+    const dataValues = /*[[${chartData}]]*/ [];
+
+    // Chart.jsの設定をして円グラフを描画する
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie', // 'pie' にすると円グラフ（'bar'にすれば棒グラフ）
+        data: {
+            labels: labels,
+            datasets: [{
+                data: dataValues,
+                backgroundColor: [
+                    '#3498db', '#2ecc71', '#e74c3c', '#f1c40f', '#9b59b6', '#1abc9c'
+                ],
+                borderWidth: 1
+            }]
+        },
+		options: {
+			responsive: true,
+			plugins: {
+				legend: { position: 'bottom' },
+				// ここからツールチップのカスタマイズを追加
+				tooltip: {
+					callbacks: {
+					label: function(context) {
+						// このカテゴリのデータ値（時間）を取得
+						const value = context.raw;
+		
+		               　// 全カテゴリの合計値を計算
+		                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+		                            
+						// 割合（%）を計算し、Math.floor で小数点以下を切り捨て
+						const percentage = Math.floor((value / total) * 100);
+		                            
+		               　// 画面に「カテゴリ名: 8.5h (45%)」のように表示させる
+		                return `${context.label}: ${value}h (${percentage}%)`;
+					}
+				    }
+			    }
+            }
+	　　　　}
+　　　　});
+</script>
+
+</body>
+</html>
