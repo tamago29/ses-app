@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.sesapp.entity.TaskCategory;
+import com.example.sesapp.entity.User;
 import com.example.sesapp.repository.TaskCategoryRepository;
+import com.example.sesapp.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class TaskCategoryService {
 	
 	private final TaskCategoryRepository taskCategoryRepository;
+	private final UserRepository userRepository;
 	
 	// カテゴリ一覧を取得する
     public List<TaskCategory> findAll() {
@@ -26,4 +29,8 @@ public class TaskCategoryService {
     	taskCategoryRepository.save(taskCategory); 
     }
 
+    public List<TaskCategory> getTaskCategoriesByUsername(String email) {
+        User user = userRepository.findByEmail(email);
+        return taskCategoryRepository.findByUserIdOrderById(user.getId());
+    }
 }
