@@ -7,11 +7,12 @@
         body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f7f6; }
         .form-container { background: white; padding: 30px; border-radius: 8px; max-width: 500px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .form-group { margin-bottom: 20px; }
+		.btn { font-size: 1rem; display: inline-block; background-color: #28a745; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; cursor: pointer; }
+		.btn:hover { background-color: #218838; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         input[type="date"], textarea { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
         textarea { height: 150px; }
-        button { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color: #218838; }
+        button { border: none;}
     </style>
 </head>
 <body>
@@ -19,7 +20,7 @@
     <h1>日報の新規登録</h1>
 
     <div class="form-container">
-        <!-- ① th:object で Javaから届いた空のオブジェクトを指定 -->
+        <!-- th:object で Javaから届いた空のオブジェクトを指定 -->
 		<form th:action="@{/daily-log/register}"
 		      th:object="${form}"
 		      method="post">
@@ -60,11 +61,11 @@
 		    </table>
 
 		    <br>
-
-		    <button type="submit">登録</button>
+			
+			<a th:href="@{/daily-log/list}" class="btn">戻る</a>
+		    <button type="submit" class="btn">登録</button>
 
 		</form>
-
     </div>
 
 </body>
