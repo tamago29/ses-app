@@ -1,4 +1,4 @@
-package com.example.sesapp.dto;
+package com.example.sesapp.form;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

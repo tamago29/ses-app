@@ -1,9 +1,7 @@
 package com.example.sesapp.controller;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,9 +16,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.sesapp.dto.DailyLogForm;
 import com.example.sesapp.entity.DailyLog;
 import com.example.sesapp.entity.TaskCategory;
+import com.example.sesapp.form.DailyLogForm;
 import com.example.sesapp.service.DailyLogService;
 import com.example.sesapp.service.TaskCategoryService;
 
@@ -106,65 +104,5 @@ public class DailyLogController {
         );
 
         return "redirect:/daily-log/list";
-    }
-    
-    @GetMapping("/category-list")
-    public String showCategoryList(
-    		@AuthenticationPrincipal UserDetails userDetails,
-    		Model model) {
-    	
-    	String email = userDetails.getUsername();
-    	
-    	// ログインユーザーのカテゴリ一覧（List<TaskCategory>）を取得
-        List<TaskCategory> rawCategories = taskCategoryService.getTaskCategoriesByUsername(email);
-        
-        model.addAttribute("rawCategories", rawCategories);
-        return "daily-log/category-list";
-    }
-    
-    // グラフ画面表示
-    @GetMapping("/analytics")
-    public String showAnalytics(
-            @AuthenticationPrincipal UserDetails userDetails,
-            Model model) {
-
-        String email = userDetails.getUsername();
-
-        // ユーザーの全日報データを取得
-        List<DailyLog> rawLogs = dailyLogService.getDailyLogsByUsername(email);
-
-        // TaskCategoryごとに稼働時間を集計し、category.no の昇順にソートして LinkedHashMap に格納
-        Map<TaskCategory, BigDecimal> categoryTotalMap = rawLogs.stream()
-                .collect(Collectors.groupingBy(
-                        DailyLog::getTaskCategory,                                    // キー：TaskCategoryオブジェクト
-                        Collectors.mapping(
-                                DailyLog::getWorkHours,
-                                Collectors.reducing(BigDecimal.ZERO, BigDecimal::add)) // 値：時間の合計
-                ))
-                .entrySet().stream()
-                // noの昇順でソート（null安全対策付き）
-                .sorted(Map.Entry.comparingByKey(
-                        Comparator.comparing(
-                                TaskCategory::getNo,
-                                Comparator.nullsLast(Comparator.naturalOrder())
-                        )
-                ))
-                // ソート結果の順番を保持したまま LinkedHashMap へ詰める
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (oldVal, newVal) -> oldVal,
-                        LinkedHashMap::new
-                ));
-
-        // カテゴリ名（String）のリストと合計時間のリストを抽出し、モデルに詰める
-        List<String> chartLabels = categoryTotalMap.keySet().stream()
-                .map(TaskCategory::getName)
-                .collect(Collectors.toList());
-
-        model.addAttribute("chartLabels", chartLabels);
-        model.addAttribute("chartData", categoryTotalMap.values());
-
-        return "daily-log/analytics"; 
     }
 }
