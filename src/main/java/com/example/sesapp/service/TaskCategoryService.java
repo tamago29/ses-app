@@ -3,6 +3,7 @@ package com.example.sesapp.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.sesapp.entity.TaskCategory;
 import com.example.sesapp.entity.User;
@@ -23,14 +24,19 @@ public class TaskCategoryService {
         return taskCategoryRepository.findAll();
     }
     
-	// カテゴリデータをデータベースに保存する処理
-    public void save(TaskCategory taskCategory) {
-        // リポジトリのsaveメソッドを呼び出して、JPAの力でDBに保存する
-    	taskCategoryRepository.save(taskCategory); 
+    @Transactional
+    public void saveAll(String email, List<TaskCategory> categories) {
+        User user = userRepository.findByEmail(email);
+        for (TaskCategory category : categories) {
+            // User情報などをセットして一括保存
+            category.setUser(user);
+            taskCategoryRepository.save(category);
+        }
     }
 
     public List<TaskCategory> getTaskCategoriesByUsername(String email) {
         User user = userRepository.findByEmail(email);
         return taskCategoryRepository.findByUserIdOrderById(user.getId());
     }
+    
 }

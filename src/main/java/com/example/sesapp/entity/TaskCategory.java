@@ -29,4 +29,6 @@ public class TaskCategory {
 
     @Column(name = "no", nullable = false, unique = true)
     private Integer no;
+    
+   
 }

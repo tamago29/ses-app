@@ -6,10 +6,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.sesapp.dto.DailyLogForm;
 import com.example.sesapp.entity.DailyLog;
 import com.example.sesapp.entity.TaskCategory;
 import com.example.sesapp.entity.User;
+import com.example.sesapp.form.DailyLogForm;
 import com.example.sesapp.repository.DailyLogRepository;
 import com.example.sesapp.repository.UserRepository;
 
