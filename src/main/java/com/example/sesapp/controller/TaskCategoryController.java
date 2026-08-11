@@ -6,10 +6,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.sesapp.entity.TaskCategory;
 import com.example.sesapp.form.CategoryForm;
@@ -69,11 +71,30 @@ public class TaskCategoryController {
     @PostMapping(value = "/category-list", params = "save")
     public String saveCategories(
             @AuthenticationPrincipal UserDetails userDetails,
-            @ModelAttribute CategoryForm categoryForm) {
+            @ModelAttribute CategoryForm categoryForm,
+            BindingResult bindingResult,
+            Model model) {
         
         String email = userDetails.getUsername();
+        
+        // バリデーション実行
+        taskCategoryService.validateCategories(categoryForm, bindingResult, email);
+        
+        // エラーがある場合は保存せずに元の画面を再表示
+        if (bindingResult.hasErrors()) {
+            // エラー発生時は再表示（ModelにcategoryFormが入った状態で元のHTMLへ）
+            return "daily-log/category-list";
+        }
+        
         taskCategoryService.saveAll(email, categoryForm.getCategories());
         
         return "redirect:/daily-log/category-list";
+    }
+    
+    //削除ボタンが押されたとき
+    @PostMapping(value = "category-list", params = "delete_id")
+    public String deleteRow(@RequestParam("delete_id") Integer id) {
+    	taskCategoryService.deleteById(id);
+    	return "redirect:/daily-log/category-list";
     }
 }

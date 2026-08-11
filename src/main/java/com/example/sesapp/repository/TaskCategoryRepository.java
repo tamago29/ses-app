@@ -10,6 +10,6 @@ import com.example.sesapp.entity.TaskCategory;
 @Repository
 public interface TaskCategoryRepository extends JpaRepository<TaskCategory, Integer> {
 	
-	// 「特定のユーザーのカテゴリ一覧のみ」をID順で全て取得するメソッド
-    List<TaskCategory> findByUserIdOrderById(Integer userId);
+	// 「特定のユーザーのカテゴリ一覧のみ」をNo順で全て取得するメソッド
+    List<TaskCategory> findByUserIdOrderByNo(Integer userId);
 }
