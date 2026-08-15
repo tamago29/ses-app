@@ -11,7 +11,6 @@ import com.example.sesapp.entity.TaskCategory;
 import com.example.sesapp.entity.User;
 import com.example.sesapp.form.DailyLogForm;
 import com.example.sesapp.repository.DailyLogRepository;
-import com.example.sesapp.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,13 +20,12 @@ import lombok.RequiredArgsConstructor;
 public class DailyLogService {
 
     private final DailyLogRepository dailyLogRepository;
-    private final UserRepository userRepository;
+    private final LoginUserService loginUserService;
 
     public void saveAll(List<DailyLogForm.CategoryWork> items,
-                        String email,
                         LocalDate workDate) {
 
-        User user = userRepository.findByEmail(email);
+        User user = loginUserService.getLoginUser();
 
         // 送信されてきたアイテムが空の場合は何もしない
         if (items == null) {
@@ -56,8 +54,10 @@ public class DailyLogService {
         }
     }
 
-    public List<DailyLog> getDailyLogsByUsername(String email) {
-        User user = userRepository.findByEmail(email);
-        return dailyLogRepository.findByUserIdOrderByIdDesc(user.getId());
+    public List<DailyLog> getDailyLogs() {
+    	
+    	User user = loginUserService.getLoginUser();
+    	
+    	return dailyLogRepository.findByUserIdOrderByIdDesc(user.getId());
     }
 }

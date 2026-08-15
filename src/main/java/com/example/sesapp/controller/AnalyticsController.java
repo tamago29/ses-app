@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,14 +27,10 @@ public class AnalyticsController {
 
     // グラフ画面表示
     @GetMapping("/analytics")
-    public String showAnalytics(
-            @AuthenticationPrincipal UserDetails userDetails,
-            Model model) {
-
-        String email = userDetails.getUsername();
+    public String showAnalytics(Model model) {
 
         // ユーザーの全日報データを取得
-        List<DailyLog> rawLogs = dailyLogService.getDailyLogsByUsername(email);
+        List<DailyLog> rawLogs = dailyLogService.getDailyLogs();
 
         // TaskCategoryごとに稼働時間を集計し、category.no の昇順にソートして LinkedHashMap に格納
         Map<TaskCategory, BigDecimal> categoryTotalMap = rawLogs.stream()
