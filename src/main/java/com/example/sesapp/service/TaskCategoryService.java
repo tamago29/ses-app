@@ -12,7 +12,6 @@ import com.example.sesapp.entity.TaskCategory;
 import com.example.sesapp.entity.User;
 import com.example.sesapp.form.CategoryForm;
 import com.example.sesapp.repository.TaskCategoryRepository;
-import com.example.sesapp.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class TaskCategoryService {
 	
 	private final TaskCategoryRepository taskCategoryRepository;
-	private final UserRepository userRepository;
+	private final LoginUserService loginUserService;
 	
 	// カテゴリ一覧を取得する
     public List<TaskCategory> findAll() {
@@ -29,8 +28,10 @@ public class TaskCategoryService {
     }
     
     @Transactional
-    public void saveAll(String email, List<TaskCategory> categories) {
-        User user = userRepository.findByEmail(email);
+    public void saveAll(List<TaskCategory> categories) {
+    	
+        User user = loginUserService.getLoginUser();
+        
         for (TaskCategory category : categories) {
             // User情報などをセットして一括保存
             category.setUser(user);
@@ -38,8 +39,10 @@ public class TaskCategoryService {
         }
     }
 
-    public void validateCategories(CategoryForm categoryForm, BindingResult bindingResult, String email) {
+    public void validateCategories(CategoryForm categoryForm, BindingResult bindingResult) {
+    	
         List<TaskCategory> categories = categoryForm.getCategories();
+        
         if (categories == null || categories.isEmpty()) return;
 
         Set<Integer> seenNos = new HashSet<>();
@@ -62,13 +65,11 @@ public class TaskCategoryService {
         }
     }
     
-    public List<TaskCategory> getTaskCategoriesByUsername(String email) {
-        User user = userRepository.findByEmail(email);
-        return taskCategoryRepository.findByUserIdOrderByNo(user.getId());
-    }
-    
+    @Transactional
     public void deleteById(Integer id) {
-    	taskCategoryRepository.deleteById(id);
+    	User user = loginUserService.getLoginUser();
+
+        taskCategoryRepository.deleteByIdAndUserId(id,user.getId());
     }
     
 }

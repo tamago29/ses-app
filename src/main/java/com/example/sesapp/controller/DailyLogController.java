@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,14 +32,10 @@ public class DailyLogController {
 
     // 一覧表示
     @GetMapping("/list")
-    public String showDailyLogList(
-            @AuthenticationPrincipal UserDetails userDetails,
-            Model model) {
-
-        String email = userDetails.getUsername();
+    public String showDailyLogList(Model model) {
 
         // ログインユーザーの日報一覧（List<DailyLog>）を取得
-        List<DailyLog> rawLogs = dailyLogService.getDailyLogsByUsername(email);
+        List<DailyLog> rawLogs = dailyLogService.getDailyLogs();
 
         // 日付（workDate）ごとにデータをグループ化し、グループ内をnoの昇順にソート
         Map<java.time.LocalDate, List<DailyLog>> groupedLogs = rawLogs.stream()
@@ -94,12 +88,10 @@ public class DailyLogController {
     // 登録処理
     @PostMapping("/register")
     public String register(
-            @ModelAttribute DailyLogForm form,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @ModelAttribute DailyLogForm form) {
 
         dailyLogService.saveAll(
                 form.getItems(),
-                userDetails.getUsername(),
                 form.getWorkDate()
         );
 

@@ -2,8 +2,6 @@ package com.example.sesapp.controller;
 
 import java.util.List;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,14 +25,10 @@ public class TaskCategoryController {
     private final TaskCategoryService taskCategoryService;
 
     @GetMapping("/category-list")
-    public String showCategoryList(
-            @AuthenticationPrincipal UserDetails userDetails,
-            Model model) {
-        
-        String email = userDetails.getUsername();
-        
+    public String showCategoryList(Model model) {
+      
         // DBからログインユーザーのカテゴリ一覧を取得
-        List<TaskCategory> rawCategories = taskCategoryService.getTaskCategoriesByUsername(email);
+        List<TaskCategory> rawCategories = taskCategoryService.findAll();
         
         // CategoryForm オブジェクトを作成し、取得したリストをセット
         CategoryForm categoryForm = new CategoryForm();
@@ -70,15 +64,12 @@ public class TaskCategoryController {
     // 保存ボタンが押されたとき（一括保存）
     @PostMapping(value = "/category-list", params = "save")
     public String saveCategories(
-            @AuthenticationPrincipal UserDetails userDetails,
             @ModelAttribute CategoryForm categoryForm,
             BindingResult bindingResult,
             Model model) {
         
-        String email = userDetails.getUsername();
-        
         // バリデーション実行
-        taskCategoryService.validateCategories(categoryForm, bindingResult, email);
+        taskCategoryService.validateCategories(categoryForm, bindingResult);
         
         // エラーがある場合は保存せずに元の画面を再表示
         if (bindingResult.hasErrors()) {
@@ -86,7 +77,7 @@ public class TaskCategoryController {
             return "daily-log/category-list";
         }
         
-        taskCategoryService.saveAll(email, categoryForm.getCategories());
+        taskCategoryService.saveAll(categoryForm.getCategories());
         
         return "redirect:/daily-log/category-list";
     }
