@@ -1,5 +1,6 @@
 package com.example.sesapp.controller;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -30,9 +31,18 @@ public class TaskCategoryController {
         // DBからログインユーザーのカテゴリ一覧を取得
         List<TaskCategory> rawCategories = taskCategoryService.findAll();
         
+        List<TaskCategory> categories = rawCategories.stream()
+        	    .sorted(
+        	        Comparator.comparing(
+        	            TaskCategory::getNo,
+        	            Comparator.nullsLast(Comparator.naturalOrder())
+        	        )
+        	    )
+        	    .toList();
+
         // CategoryForm オブジェクトを作成し、取得したリストをセット
         CategoryForm categoryForm = new CategoryForm();
-        categoryForm.setCategories(rawCategories);
+        categoryForm.setCategories(categories);
         
         // "categoryForm"をModel にセット！
         model.addAttribute("categoryForm", categoryForm);

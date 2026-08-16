@@ -71,9 +71,16 @@ public class DailyLogController {
 
         form.setItems(
                 categories.stream()
+                		.sorted(
+                				Comparator.comparing(
+                						TaskCategory::getNo,
+                						Comparator.nullsLast(Comparator.naturalOrder())
+                						)
+                				)
                         .map(cat -> {
                             DailyLogForm.CategoryWork item = new DailyLogForm.CategoryWork();
                             item.setCategoryId(cat.getId());
+                            item.setCategoryNo(cat.getNo());
                             item.setCategoryName(cat.getName());
                             return item;
                         })
