@@ -37,6 +37,7 @@
 		    <table border="1">
 
 		        <tr>
+					<th>No</th>
 					<th>カテゴリ</th>
 		            <th>所要時間</th>
 		        </tr>
@@ -47,6 +48,9 @@
 		            <input type="hidden"
 		                   th:field="*{items[__${stat.index}__].categoryId}">
 
+				    <!-- No -->
+				    <td th:text="${item.categoryNo}"></td>
+					
 		            <!-- 表示名（カテゴリ名はControllerで拡張も可能） -->
 					<td th:text="${item.categoryName}"></td>
 

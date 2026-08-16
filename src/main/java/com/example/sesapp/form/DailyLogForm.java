@@ -16,6 +16,7 @@ public class DailyLogForm {
     @Data
     public static class CategoryWork {
         private Integer categoryId;
+        private Integer categoryNo;
         private String categoryName;
         private BigDecimal workHours;
     }
