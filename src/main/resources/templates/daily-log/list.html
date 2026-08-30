@@ -17,16 +17,25 @@
 	</div>
 	
 	<div class="log-board">
-	    <div th:each="entry : ${groupedLogs}" class="log-card">
-	        <div>
-	            <span class="date" th:text="${entry.key}"></span>
-	            
-	            <th:block th:each="log : ${entry.value}">
-	                <span class="category" th:text="${log.taskCategory.name}"></span>
-					<span class="time" th:text="|${log.workHours}h|"></span>
-	            </th:block>
-	        </div>
-	    </div>
+		<form th:action="@{/daily-log/delete}" method="post">
+		    <div th:each="entry : ${groupedLogs}" class="log-card">
+		        <div class="d-flex justify-content-between align-items-center">
+					
+					<div class="d-flex align-items-center gap-2">
+			            <span class="date" th:text="${entry.key}"></span>
+			            
+			            <th:block th:each="log : ${entry.value}">
+			                <span class="category" th:text="${log.taskCategory.name}"></span>
+							<span class="time" th:text="|${log.workHours}h|"></span>					
+			            </th:block>
+					</div>
+					
+						<button type="submit" name="delete" th:value="${entry.key}" class="btn btn-danger btn-sm" onclick="return confirm('本当に削除しますか？');">
+							削除 
+					    </button>
+		        </div>
+		    </div>
+		</form>
 	</div>
 
 	<div th:if="${#maps.isEmpty(groupedLogs)}" style="color: #666;">

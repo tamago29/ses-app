@@ -22,8 +22,7 @@ public class DailyLogService {
     private final DailyLogRepository dailyLogRepository;
     private final LoginUserService loginUserService;
 
-    public void saveAll(List<DailyLogForm.CategoryWork> items,
-                        LocalDate workDate) {
+    public void saveAll(List<DailyLogForm.CategoryWork> items,LocalDate workDate) {
 
         User user = loginUserService.getLoginUser();
 
@@ -59,5 +58,12 @@ public class DailyLogService {
     	User user = loginUserService.getLoginUser();
     	
     	return dailyLogRepository.findByUserIdOrderByIdDesc(user.getId());
+    }
+    
+    @Transactional
+    public void deleteById(LocalDate workDate) {
+    	User user = loginUserService.getLoginUser();
+
+    	dailyLogRepository.deleteByWorkDateAndUserId(workDate,user.getId());
     }
 }
