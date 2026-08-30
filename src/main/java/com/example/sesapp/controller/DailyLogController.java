@@ -1,5 +1,6 @@
 package com.example.sesapp.controller;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.sesapp.entity.DailyLog;
 import com.example.sesapp.entity.TaskCategory;
@@ -94,14 +96,17 @@ public class DailyLogController {
 
     // 登録処理
     @PostMapping("/register")
-    public String register(
-            @ModelAttribute DailyLogForm form) {
+    public String register(@ModelAttribute DailyLogForm form) {
 
-        dailyLogService.saveAll(
-                form.getItems(),
-                form.getWorkDate()
-        );
+        dailyLogService.saveAll(form.getItems(),form.getWorkDate());
 
         return "redirect:/daily-log/list";
+    }
+    
+    // 削除処理
+    @PostMapping(value = "/delete", params = "delete")
+    public String deleteRow(@RequestParam("delete") LocalDate workDate) {
+    	dailyLogService.deleteById(workDate);
+    	return "redirect:/daily-log/list";
     }
 }

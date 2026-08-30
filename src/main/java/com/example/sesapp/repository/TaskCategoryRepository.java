@@ -13,5 +13,5 @@ public interface TaskCategoryRepository extends JpaRepository<TaskCategory, Inte
 	// 「特定のユーザーのカテゴリ一覧のみ」をNo順で全て取得するメソッド
     List<TaskCategory> findByUserIdOrderByNo(Integer userId);
     
-    int deleteByIdAndUserId(Integer id, Integer userId);
+    void deleteByIdAndUserId(Integer id, Integer userId);
 }
